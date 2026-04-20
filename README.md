@@ -7,7 +7,7 @@
 
 A personal web app for building intuitive Celsius-to-Fahrenheit temperature conversion — not by memorizing a formula, but by practicing until it clicks.
 
-**[Live app →](https://your-app.onrender.com)** <!-- TODO: update after deploy -->
+**[Live app →](https://hot-or-not-fh09.onrender.com)**
 
 ---
 
