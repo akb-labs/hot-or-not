@@ -5,9 +5,7 @@ const { Pool } = require('pg');
 // External Render URLs require SSL; disable cert verification for self-signed certs
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production'
-    ? true
-    : { rejectUnauthorized: false },
+  ssl: { rejectUnauthorized: false },
 });
 
 // ─── Schema init ──────────────────────────────────────────────────────────────
