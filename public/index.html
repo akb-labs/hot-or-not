@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hot or Not</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="quiz-page">
+  <div class="app">
+
+    <!-- Header -->
+    <header class="site-header">
+      <a href="/stats" class="nav-link nav-link--right">stats →</a>
+    </header>
+
+    <!-- Hero -->
+    <div class="hero">
+      <img src="sun3.png" alt="Hot or Not sun" class="logo-sun" />
+      <h1 class="hero-title">hot or not</h1>
+    </div>
+
+    <!-- Question screen -->
+    <main id="screen-question" class="screen active">
+      <div class="question-card">
+        <p class="question-label">What is this in Fahrenheit?</p>
+        <div class="temp-display">
+          <span id="celsius-value" class="temp-number">—</span>
+          <span class="temp-unit">°C</span>
+        </div>
+        <p class="temp-word">Celsius</p>
+      </div>
+
+      <form id="answer-form" class="answer-form" novalidate>
+        <label for="user-answer" class="answer-label">Your answer in °F</label>
+        <input
+          type="number"
+          id="user-answer"
+          name="userAnswer"
+          inputmode="numeric"
+          autocomplete="off"
+          required
+        />
+        <p id="input-error" class="input-error" aria-live="polite"></p>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+      <p class="byline">created by <strong>akb</strong></p>
+    </main>
+
+    <!-- Result screen -->
+    <main id="screen-result" class="screen" aria-live="polite">
+      <div id="result-badge" class="result-badge">
+        <span id="result-icon" class="result-icon"></span>
+        <span id="result-text" class="result-text"></span>
+      </div>
+
+      <div class="result-details">
+        <p id="result-equation" class="result-equation"></p>
+        <p id="result-diff" class="result-diff"></p>
+        <p id="result-formula" class="result-formula"></p>
+      </div>
+
+      <div id="result-context" class="result-context hidden">
+        <span class="context-label">By the way</span>
+        <span id="context-text"></span>
+      </div>
+
+      <button id="next-btn" class="btn btn-primary">Next question</button>
+      <p class="byline">created by <strong>akb</strong></p>
+    </main>
+
+  </div>
+
+  <script src="quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stats — Hot or Not</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app stats-app">
+
+    <!-- Header -->
+    <header class="site-header">
+      <a href="/" class="nav-link">← quiz</a>
+    </header>
+
+    <!-- Hero -->
+    <div class="hero">
+      <img src="sun3.png" alt="Hot or Not sun" class="logo-sun" />
+      <h1 class="hero-title">hot or not</h1>
+    </div>
+
+    <main class="stats-main">
+
+      <!-- Summary -->
+      <section class="stats-summary" id="summary-section">
+        <div class="summary-card" id="stat-total">
+          <span class="summary-value" id="val-total">—</span>
+          <span class="summary-label">total attempts</span>
+        </div>
+        <div class="summary-card" id="stat-accuracy">
+          <span class="summary-value" id="val-accuracy">—</span>
+          <span class="summary-label">overall accuracy</span>
+        </div>
+        <div class="summary-card" id="stat-since">
+          <span class="summary-value" id="val-since">—</span>
+          <span class="summary-label">practicing since</span>
+        </div>
+      </section>
+
+      <!-- Weekly chart -->
+      <section class="stats-section">
+        <h2 class="stats-heading">Accuracy by week</h2>
+        <div class="chart-wrap">
+          <div id="chart-empty" class="chart-empty hidden">No data yet — start quizzing!</div>
+          <canvas id="weekly-chart" aria-label="Weekly accuracy chart"></canvas>
+        </div>
+      </section>
+
+      <!-- Breakdown table -->
+      <section class="stats-section">
+        <h2 class="stats-heading">Per-temperature breakdown</h2>
+        <div id="table-empty" class="chart-empty hidden">No data yet — start quizzing!</div>
+        <div class="table-wrap">
+          <table id="breakdown-table" class="breakdown-table hidden">
+            <thead>
+              <tr>
+                <th>°C</th>
+                <th>Exact °F</th>
+                <th>Attempts</th>
+                <th>Correct</th>
+                <th>Accuracy</th>
+              </tr>
+            </thead>
+            <tbody id="breakdown-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Error state -->
+      <div id="stats-error" class="stats-error hidden">
+        <p>Could not load stats. Is the server running?</p>
+        <button class="btn btn-secondary" onclick="location.reload()">Retry</button>
+      </div>
+
+      <p class="byline">created by <strong>akb</strong></p>
+    </main>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <script src="stats.js"></script>
+</body>
+</html>
