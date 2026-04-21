@@ -123,6 +123,14 @@ body {
   font-weight: 600;
 }
 
+.view-count {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  margin-top: 0.25rem;
+  min-height: 1em;
+}
+
 .nav-links {
   display: flex;
   gap: 0.25rem;

@@ -7,6 +7,12 @@ const path = require('path');
 const db = require('./db');
 const { getContext } = require('./temps');
 
+// Simple bot filter — don't count obvious crawlers
+function isBot(req) {
+  const ua = (req.headers['user-agent'] || '').toLowerCase();
+  return /bot|crawl|spider|slurp|facebookexternalhit|curl|wget|python|java|go-http|headless/i.test(ua);
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -23,7 +29,8 @@ app.get('/health', (req, res) => {
 
 // ─── Pages ────────────────────────────────────────────────────────────────────
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+  if (!isBot(req)) db.trackView().catch(() => {});
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
@@ -33,6 +40,15 @@ app.get('/stats', (req, res) => {
 
 app.get('/about', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/about.html'));
+});
+
+app.get('/api/views', async (req, res) => {
+  try {
+    const total = await db.getViewCount();
+    res.json({ total });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch view count' });
+  }
 });
 
 // ─── API: Submit answer ───────────────────────────────────────────────────────

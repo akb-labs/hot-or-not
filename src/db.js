@@ -25,6 +25,11 @@ async function init() {
 
       CREATE INDEX IF NOT EXISTS idx_answered_at ON attempts (answered_at);
       CREATE INDEX IF NOT EXISTS idx_celsius      ON attempts (celsius);
+
+      CREATE TABLE IF NOT EXISTS page_views (
+        id         SERIAL PRIMARY KEY,
+        viewed_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
     `);
     console.log('Database ready');
   } finally {
@@ -98,4 +103,16 @@ async function getSummary() {
   return rows[0];
 }
 
-module.exports = { init, saveAttempt, getWeeklyStats, getBreakdown, getSummary };
+async function trackView() {
+  const { rows } = await pool.query(
+    `INSERT INTO page_views DEFAULT VALUES RETURNING (SELECT COUNT(*)::int FROM page_views) AS total`
+  );
+  return rows[0].total;
+}
+
+async function getViewCount() {
+  const { rows } = await pool.query(`SELECT COUNT(*)::int AS total FROM page_views`);
+  return rows[0].total;
+}
+
+module.exports = { init, saveAttempt, getWeeklyStats, getBreakdown, getSummary, trackView, getViewCount };

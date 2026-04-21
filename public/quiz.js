@@ -154,6 +154,20 @@ nextBtn.addEventListener('click', () => {
   newQuestion();
 });
 
+// ─── View count ───────────────────────────────────────────────────────────────
+
+async function loadViewCount() {
+  try {
+    const res = await fetch('/api/views');
+    if (!res.ok) return;
+    const { total } = await res.json();
+    const text = `${total.toLocaleString()} ${total === 1 ? 'visit' : 'visits'}`;
+    document.getElementById('view-count').textContent = text;
+    document.getElementById('view-count-result').textContent = text;
+  } catch (_) {}
+}
+
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
 newQuestion();
+loadViewCount();
