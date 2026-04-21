@@ -31,6 +31,10 @@ app.get('/stats', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/stats.html'));
 });
 
+app.get('/about', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/about.html'));
+});
+
 // ─── API: Submit answer ───────────────────────────────────────────────────────
 
 app.post('/api/answer', async (req, res) => {
