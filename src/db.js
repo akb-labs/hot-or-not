@@ -104,10 +104,7 @@ async function getSummary() {
 }
 
 async function trackView() {
-  const { rows } = await pool.query(
-    `INSERT INTO page_views DEFAULT VALUES RETURNING (SELECT COUNT(*)::int FROM page_views) AS total`
-  );
-  return rows[0].total;
+  await pool.query(`INSERT INTO page_views DEFAULT VALUES`);
 }
 
 async function getViewCount() {
