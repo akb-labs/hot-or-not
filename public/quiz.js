@@ -158,10 +158,10 @@ nextBtn.addEventListener('click', () => {
 
 async function loadViewCount() {
   try {
-    const res = await fetch('/api/views');
+    const res = await fetch('/api/stats/summary');
     if (!res.ok) return;
-    const { total } = await res.json();
-    const text = `${total.toLocaleString()} ${total === 1 ? 'visit' : 'visits'}`;
+    const { totalAttempts } = await res.json();
+    const text = `${totalAttempts.toLocaleString()} temps translated`;
     document.getElementById('view-count').textContent = text;
     document.getElementById('view-count-result').textContent = text;
   } catch (_) {}
