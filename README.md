@@ -3,11 +3,12 @@
 ![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-4.x-000000?logo=express&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
-![Render](https://img.shields.io/badge/Deployed_on-Render-46E3B7?logo=render&logoColor=white)
+![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?logo=vercel&logoColor=white)
+![Neon](https://img.shields.io/badge/Database-Neon-00E599?logo=postgresql&logoColor=white)
 
 A personal web app for building intuitive Celsius-to-Fahrenheit temperature conversion — not by memorizing a formula, but by practicing until it clicks.
 
-**[Live app →](https://hot-or-not-fh09.onrender.com)**
+**[Live app →](https://your-vercel-project.vercel.app)** _(update after first deploy)_
 
 ---
 
@@ -76,7 +77,8 @@ The app creates the `attempts` table automatically on first start — no migrati
 | Database  | PostgreSQL via `pg`      |
 | Frontend  | Vanilla HTML + CSS + JS  |
 | Charts    | Chart.js (CDN)           |
-| Hosting   | Render (free tier)       |
+| Hosting   | Vercel (serverless functions) |
+| Database hosting | Neon (serverless Postgres) |
 
 ---
 
@@ -91,3 +93,17 @@ The app creates the `attempts` table automatically on first start — no migrati
 ---
 
 *Built to solve a real problem. The formula is C × 9/5 + 32. The goal is to not need it.*
+
+
+---
+
+## Deploying to Vercel
+
+1. Push this repo to GitHub (already done — `akb-labs/hot-or-not`).
+2. Create a free Postgres database at [neon.tech](https://neon.tech) (or via Vercel's Storage tab) and copy its connection string.
+3. Go to [vercel.com/new](https://vercel.com/new), import this GitHub repo.
+4. In the project's Environment Variables, add:
+   - `DATABASE_URL` = your Neon connection string
+   - `NODE_ENV` = `production`
+5. Deploy. Vercel runs the Express app as a serverless function (`api/index.js`); `vercel.json` routes all requests to it, so every existing route (`/`, `/stats`, `/about`, `/api/*`) works unchanged.
+6. Visit `/health` on the deployed URL to confirm the app and DB connection are working — the `attempts` and `page_views` tables are created automatically on first request.
