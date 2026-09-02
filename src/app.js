@@ -2,6 +2,7 @@
 
 const express = require('express');
 const path = require('path');
+const crypto = require('crypto');
 const db = require('./db');
 const { getContext } = require('./temps');
 
@@ -11,11 +12,50 @@ function isBot(req) {
   return /bot|crawl|spider|slurp|facebookexternalhit|curl|wget|python|java|go-http|headless/i.test(ua);
 }
 
+// ─── Cookie helpers (no dependency — just enough to read/set one cookie) ──────
+
+function parseCookies(header) {
+  const cookies = {};
+  if (!header) return cookies;
+  header.split(';').forEach((pair) => {
+    const idx = pair.indexOf('=');
+    if (idx === -1) return;
+    const key = pair.slice(0, idx).trim();
+    const val = pair.slice(idx + 1).trim();
+    if (key) cookies[key] = decodeURIComponent(val);
+  });
+  return cookies;
+}
+
+const VISITOR_COOKIE = 'visitor_id';
+const VISITOR_COOKIE_MAX_AGE = 60 * 60 * 24 * 365 * 5; // ~5 years
+
 const app = express();
+
+// Trust Vercel's edge proxy so req.secure reflects the real (https) protocol.
+app.set('trust proxy', true);
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 
 app.use(express.json());
+
+// Give every visitor a private, anonymous ID (no login) so quiz history and
+// stats are scoped to them instead of shared globally.
+app.use((req, res, next) => {
+  const cookies = parseCookies(req.headers.cookie);
+  let visitorId = cookies[VISITOR_COOKIE];
+  if (!visitorId) {
+    visitorId = crypto.randomUUID();
+    const secure = req.secure ? '; Secure' : '';
+    res.setHeader(
+      'Set-Cookie',
+      `${VISITOR_COOKIE}=${visitorId}; Max-Age=${VISITOR_COOKIE_MAX_AGE}; Path=/; HttpOnly; SameSite=Lax${secure}`,
+    );
+  }
+  req.visitorId = visitorId;
+  next();
+});
+
 app.use(express.static(path.join(__dirname, '../public')));
 
 // ─── Health check ─────────────────────────────────────────────────────────────
@@ -71,7 +111,7 @@ app.post('/api/answer', async (req, res) => {
   const context = getContext(celsius);
 
   try {
-    await db.saveAttempt({ celsius, userAnswer, exactAnswer, correct });
+    await db.saveAttempt({ celsius, userAnswer, exactAnswer, correct, visitorId: req.visitorId });
     res.json({ correct, exactAnswer, rawAnswer, diff, context });
   } catch (err) {
     console.error('DB write error:', err);
@@ -79,11 +119,11 @@ app.post('/api/answer', async (req, res) => {
   }
 });
 
-// ─── API: Stats ───────────────────────────────────────────────────────────────
+// ─── API: Stats (scoped to the current visitor) ──────────────────────────────
 
 app.get('/api/stats/weekly', async (req, res) => {
   try {
-    const data = await db.getWeeklyStats();
+    const data = await db.getWeeklyStats(req.visitorId);
     res.json(data);
   } catch (err) {
     console.error('Weekly stats error:', err);
@@ -93,7 +133,7 @@ app.get('/api/stats/weekly', async (req, res) => {
 
 app.get('/api/stats/breakdown', async (req, res) => {
   try {
-    const data = await db.getBreakdown();
+    const data = await db.getBreakdown(req.visitorId);
     res.json(data);
   } catch (err) {
     console.error('Breakdown error:', err);
@@ -103,7 +143,7 @@ app.get('/api/stats/breakdown', async (req, res) => {
 
 app.get('/api/stats/summary', async (req, res) => {
   try {
-    const data = await db.getSummary();
+    const data = await db.getSummary(req.visitorId);
     res.json(data);
   } catch (err) {
     console.error('Summary error:', err);
